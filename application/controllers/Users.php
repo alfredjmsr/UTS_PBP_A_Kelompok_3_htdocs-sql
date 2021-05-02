@@ -7,6 +7,11 @@ use Restserver\Libraries\REST_Controller;
 
 class Users extends REST_Controller {
 
+    //1=sudah dikonfirmasi admin
+    //2=masih belum dikonfirmasi
+    //3=sudah tidak aktif
+
+
     function __construct($config = 'rest') {
         parent::__construct($config);
        // $this->load->database();
