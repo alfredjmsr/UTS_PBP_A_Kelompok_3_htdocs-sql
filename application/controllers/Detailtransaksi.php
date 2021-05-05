@@ -19,12 +19,6 @@ class Detailtransaksi extends REST_Controller {
 
     //Menampilkan data detailtransaksi yang status 1
     function index_post() {
-        // $status = 1;
-        // $id_cabang = $this->post('id_cabang');
-        // $namapembeli = null;
-        // $multipleWhere = ['nama_pembeli' => '', 'id_cabang' => $id_cabang, 'status' => $status];
-        // $detailtransaksi = $this->db->get_where('detailtransaksi',  $multipleWhere)->result();
-        // $this->response(array("result"=>$detailtransaksi, 200));
         $status = 1;
         $id_cabang = $this->post('id_cabang');
         $namapembeli = '';

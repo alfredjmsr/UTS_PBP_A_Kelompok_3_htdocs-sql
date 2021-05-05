@@ -15,16 +15,12 @@ class Transaksi extends REST_Controller {
         $this->load->database();
         $this->load->model('TransaksiModel');
         $this->model = $this->TransaksiModel;
+
     }
 
     //Menampilkan data detailtransaksi yang status 1
     function index_post() {
-        // $status = 1;
-        // $id_cabang = $this->post('id_cabang');
-        // $namapembeli = null;
-        // $multipleWhere = ['nama_pembeli' => '', 'id_cabang' => $id_cabang, 'status' => $status];
-        // $detailtransaksi = $this->db->get_where('detailtransaksi',  $multipleWhere)->result();
-        // $this->response(array("result"=>$detailtransaksi, 200));
+    
         $status = 1;
         $id_cabang = $this->post('id_cabang');
         $namapembeli = '';
@@ -43,6 +39,7 @@ class Transaksi extends REST_Controller {
 
     public function bayar_post(){
         $date=date("Y-m-d");
+
         $data = [
             'id_transaksi' => $this->input->post('id_transaksi', TRUE),
             'id_cabang' => $this->input->post('id_cabang', TRUE),
@@ -53,11 +50,15 @@ class Transaksi extends REST_Controller {
             'status' => '1'
         ];
         $response = $this->TransaksiModel->save_transaksi($data);
-
+        
         if($response){
-            $this->response(array('status' => 'Transaksi sukses'), 200);
+            $this->response(array('status' => 'Transaksi sukses'), 200); 
         }else{
             $this->response(['error'=>true, 'status'=> 'Transaksi gagal'], 401);
         }
+
+        
     }
+
+
 }

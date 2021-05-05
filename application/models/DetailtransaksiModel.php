@@ -16,7 +16,6 @@ class DetailTransaksiModel extends CI_Model {
         return $this->db->insert($this->table,$data);
     }
 
-  
 }
 
 ?>
