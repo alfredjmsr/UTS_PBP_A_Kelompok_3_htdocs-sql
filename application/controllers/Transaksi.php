@@ -37,9 +37,32 @@ class Transaksi extends REST_Controller {
 
     }
 
+    // public function bayar_post(){
+    //     $date=date("Y-m-d");
+
+    //     $data = [
+    //         'id_transaksi' => $this->input->post('id_transaksi', TRUE),
+    //         'id_cabang' => $this->input->post('id_cabang', TRUE),
+    //         'nama_pembeli' => $this->input->post('nama_pembeli', TRUE),
+    //         'total_bayar' => $this->input->post('total_bayar', TRUE),
+    //         'nama_user' => $this->input->post('nama_user', TRUE),
+    //         'tanggal'=> $date,
+    //         'status' => '1'
+    //     ];
+    //     $response = $this->TransaksiModel->save_transaksi($data);
+        
+    //     if($response){
+    //         $this->response(array('status' => 'Transaksi sukses'), 200); 
+
+    //     }else{
+    //         $this->response(['error'=>true, 'status'=> 'Transaksi gagal'], 401);
+    //     }
+
+        
+    // }
+
     public function bayar_post(){
         $date=date("Y-m-d");
-
         $data = [
             'id_transaksi' => $this->input->post('id_transaksi', TRUE),
             'id_cabang' => $this->input->post('id_cabang', TRUE),
@@ -52,11 +75,28 @@ class Transaksi extends REST_Controller {
         $response = $this->TransaksiModel->save_transaksi($data);
         
         if($response){
-            $this->response(array('status' => 'Transaksi sukses'), 200); 
+            $this->response(array('status' => 'Transaksi sukses'), 200);  
         }else{
             $this->response(['error'=>true, 'status'=> 'Transaksi gagal'], 401);
         }
 
+        
+    }
+
+    public function updatecart_post(){
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $nama_user = $this->post('nama_user',TRUE);
+        $nama_pembeli = $this->post('nama_pembeli',TRUE);
+        $queryid = $this->db->query("SELECT id_transaksi FROM transaksi WHERE nama_user = '".$nama_user."' AND nama_pembeli = '".$nama_pembeli."' AND id_cabang = '".$id_cabang."' ORDER BY id_transaksi DESC LIMIT 1");
+        $row = $queryid->row();
+        $id = $row->id_transaksi;
+        $status = 0;
+        $updatecart = $this->db->set('id_transaksi',$id)
+                                ->where('status', $status)
+                                ->where('id_cabang', $id_cabang)  
+                                ->where('nama_pembeli', $nama_pembeli)
+                                ->where('nama_user', $nama_user)
+                                ->update('detailtransaksi');
         
     }
 

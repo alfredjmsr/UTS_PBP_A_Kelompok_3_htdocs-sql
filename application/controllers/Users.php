@@ -24,8 +24,45 @@ class Users extends REST_Controller {
         $this->response(array("result"=>$users, 200));
     }
 
-    public function Register_post(){
+    function getidcabang_post() {
+        $id_cabang = $this->post('id_cabang');
+        $query = $this->db->query("SELECT id_cabang FROM `".$this->db->dbprefix('cabang')."` WHERE id_cabang='".$id_cabang."'");
+        if ($query->num_rows() > 0 )
+        {
+            $this->response(array('status' => 'Sukses ambil'), 200);
+        }else{
+            $this->response(array('status' => 'Gagal ambil'), 502);
+        }
      
+    }
+
+    function tampilregistrasi_post(){
+        $status = 3;
+        $id_cabang = $this->post('id_cabang');
+        $multipleWhere = ['id_cabang' => $id_cabang, 'status' => $status];
+        $tampilregis = $this->db->select('nama_user, noktp_user, jabatan_user')
+                                ->from('users')
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                ->get()->result();
+        $this->response(array("result"=>$tampilregis, 200));
+    }
+
+    function updateregistrasi_post(){
+        $status = 3;
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $nama_user = $this->post('nama_user',TRUE);
+        $updateregis = $this->db->set('status_user','1')
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                ->where('nama_user', $nama_user)
+                                ->update('users');
+        $this->response(array("result"=>$updateregis, 200));
+    
+        
+    }
+
+    public function Register_post(){ 
         $data = [
             'id_user' => $this->input->post('id_user', TRUE),
             'id_cabang' => $this->input->post('id_cabang', TRUE),
@@ -45,6 +82,8 @@ class Users extends REST_Controller {
             $this->response(['error'=>true, 'status'=> 'Register Gagal'], 401);
         }
     }
+
+
 
     public function Login_post(){
 
