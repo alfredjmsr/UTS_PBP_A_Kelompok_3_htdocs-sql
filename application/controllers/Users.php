@@ -96,8 +96,7 @@ class Users extends REST_Controller {
             password_user='".md5($password_user)."' AND jabatan_user='".$jabatan_user."' AND status_user = '".$status_user."'");
            	
             if ($query->num_rows() > 0 )
-            {
-                
+            {  
                 $this->response(array('status' => 'Sukses login'), 200);
             }else{
                 $this->response(array('status' => 'Gagal login'), 502);
