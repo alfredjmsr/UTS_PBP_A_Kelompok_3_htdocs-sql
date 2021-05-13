@@ -37,10 +37,10 @@ class Users extends REST_Controller {
     }
 
     function tampilregistrasi_post(){
-        $status = 3;
+        $status = 2;
         $id_cabang = $this->post('id_cabang');
         $multipleWhere = ['id_cabang' => $id_cabang, 'status' => $status];
-        $tampilregis = $this->db->select('nama_user, noktp_user, jabatan_user')
+        $tampilregis = $this->db->select('id_user,nama_user, noktp_user, jabatan_user, nohp_user, email_user')
                                 ->from('users')
                                 ->where('status_user', $status)
                                 ->where('id_cabang', $id_cabang)
@@ -48,11 +48,44 @@ class Users extends REST_Controller {
         $this->response(array("result"=>$tampilregis, 200));
     }
 
+    function tampilregistrasikasir_post(){
+        $status = 2;
+        $id_cabang = $this->post('id_cabang');
+        $jabatan_user = $this->post('jabatan_user');
+        $multipleWhere = ['id_cabang' => $id_cabang, 'status' => $status];
+        $tampilregis = $this->db->select('nama_user, noktp_user, jabatan_user')
+                                ->from('users')
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                ->where('jabatan_user', $jabatan_user)
+                                ->get()->result();
+        $this->response(array("result"=>$tampilregis, 200));
+    }
+
+    function getjabatan_post(){
+    $id_cabang = $this->post('id_cabang',TRUE);
+    $nama_user = $this->post('nama_user',TRUE);
+    $getjabatan = $this->db->select('jabatan_user')
+                            ->from('users')
+                            ->where('status_user', '1')
+                            ->where('id_cabang', $id_cabang)
+                            ->where('nama_user', $nama_user)
+                            ->get()->result();
+     if ($getjabatan)
+        {
+        $this->response(array('status' => 'Sukses cari'), 200);
+    }else{
+        $this->response(array('status' => 'Gagal cari'), 502);
+        }
+    }
+
     function updateregistrasi_post(){
-        $status = 3;
+        $status = 2;
+        $id_user = $this->post('id_user',TRUE);
         $id_cabang = $this->post('id_cabang',TRUE);
         $nama_user = $this->post('nama_user',TRUE);
         $updateregis = $this->db->set('status_user','1')
+                                ->where('id_user', $id_user)
                                 ->where('status_user', $status)
                                 ->where('id_cabang', $id_cabang)
                                 ->where('nama_user', $nama_user)
@@ -72,7 +105,7 @@ class Users extends REST_Controller {
             'email_user' => $this->input->post('email_user', TRUE),
             'password_user' => md5($this->input->post('password_user', TRUE)),
             'jabatan_user' => $this->input->post('jabatan_user', TRUE),
-            'status_user' => '3'
+            'status_user' => '2'
         ];
         $response = $this->UsersModel->save_user($data);
 
