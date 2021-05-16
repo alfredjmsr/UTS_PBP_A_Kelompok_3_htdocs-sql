@@ -65,7 +65,31 @@ class Transaksi extends REST_Controller {
         $date=date("Y-m-d");
         $data = [
             'id_transaksi' => $this->input->post('id_transaksi', TRUE),
+            'id_diskon' => '0',
             'id_cabang' => $this->input->post('id_cabang', TRUE),
+            'nama_pembeli' => $this->input->post('nama_pembeli', TRUE),
+            'total_bayar' => $this->input->post('total_bayar', TRUE),
+            'nama_user' => $this->input->post('nama_user', TRUE),
+            'tanggal'=> $date,
+            'status' => '1'
+        ];
+        $response = $this->TransaksiModel->save_transaksi($data);
+        
+        if($response){
+            $this->response(array('status' => 'Transaksi sukses'), 200);  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Transaksi gagal'], 401);
+        }
+
+        
+    }
+
+    public function diskonbayar_post(){
+        $date=date("Y-m-d");
+        $data = [
+            'id_transaksi' => $this->input->post('id_transaksi', TRUE),
+            'id_cabang' => $this->input->post('id_cabang', TRUE),
+            'id_diskon' => $this->input->post('id_diskon', TRUE),
             'nama_pembeli' => $this->input->post('nama_pembeli', TRUE),
             'total_bayar' => $this->input->post('total_bayar', TRUE),
             'nama_user' => $this->input->post('nama_user', TRUE),

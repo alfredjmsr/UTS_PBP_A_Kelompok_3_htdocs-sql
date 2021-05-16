@@ -44,6 +44,7 @@ class Products extends REST_Controller {
 							'id_produk'=> $this->post('id_produk'),
 							'nama_produk' => $this->post('nama_produk'),
 							'harga_produk' => $this->post('harga_produk'),
+							'biaya_produk' => $this->post('biaya_produk'),
 							//'jumlah_produk'=> $this->post('jumlah_produk'),
 							//'tanggal_produk'=> $this->post('tanggal_produk'),
 							'tanggal_produk'=> $date,
@@ -81,6 +82,7 @@ class Products extends REST_Controller {
 					'id_produk'=> $this->post('id_produk'),
 					'nama_produk' => $this->post('nama_produk'),
 					'harga_produk'=> $this->post('harga_produk'),
+					'biaya_produk' => $this->post('biaya_produk'),
 					'tanggal_produk'=> $date,
 					'kategori_produk'=>$this->post('kategori_produk'),
 					'foto_produk'=> $foto_produk);

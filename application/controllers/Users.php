@@ -91,6 +91,20 @@ class Users extends REST_Controller {
                                 ->where('nama_user', $nama_user)
                                 ->update('users');
         $this->response(array("result"=>$updateregis, 200));
+    }
+
+    function deleteregistrasi_post(){
+        $status = 2;
+        $id_user = $this->post('id_user',TRUE);
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $nama_user = $this->post('nama_user',TRUE);
+        $updateregis = $this->db->set('status_user','3')
+                                ->where('id_user', $id_user)
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                ->where('nama_user', $nama_user)
+                                ->update('users');
+        $this->response(array("result"=>$updateregis, 200));
     
         
     }
