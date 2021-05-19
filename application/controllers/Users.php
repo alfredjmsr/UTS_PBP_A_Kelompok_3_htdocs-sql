@@ -65,19 +65,19 @@ class Users extends REST_Controller {
     }
 
     function getjabatan_post(){
-    $id_cabang = $this->post('id_cabang',TRUE);
-    $nama_user = $this->post('nama_user',TRUE);
-    $getjabatan = $this->db->select('jabatan_user')
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $nama_user = $this->post('nama_user',TRUE);
+        $getjabatan = $this->db->select('jabatan_user')
                             ->from('users')
                             ->where('status_user', '1')
                             ->where('id_cabang', $id_cabang)
                             ->where('nama_user', $nama_user)
                             ->get()->result();
-     if ($getjabatan)
+        if ($getjabatan)
         {
-        $this->response(array('status' => 'Sukses cari'), 200);
-    }else{
-        $this->response(array('status' => 'Gagal cari'), 502);
+            $this->response(array('status' => 'Sukses cari'), 200);
+        }else{
+            $this->response(array('status' => 'Gagal cari'), 502);
         }
     }
 
@@ -112,6 +112,7 @@ class Users extends REST_Controller {
     }
 
     public function Register_post(){ 
+        $date = date("Y-m-d");
         $data = [
             'id_user' => $this->input->post('id_user', TRUE),
             'id_cabang' => $this->input->post('id_cabang', TRUE),
@@ -121,6 +122,7 @@ class Users extends REST_Controller {
             'email_user' => $this->input->post('email_user', TRUE),
             'password_user' => md5($this->input->post('password_user', TRUE)),
             'jabatan_user' => $this->input->post('jabatan_user', TRUE),
+            'tanggal_user' => $date,
             'status_user' => '2'
         ];
         $response = $this->UsersModel->save_user($data);
@@ -186,6 +188,63 @@ class Users extends REST_Controller {
 			//     $data['error']="Invalid Email ID !";
             // }	
 
+    }
+
+
+    function tampiluser_post(){
+        $status = 1;
+        $id_cabang = $this->post('id_cabang');
+       // $jabatan_user = $this->post('jabatan_user');
+        $tampiluser = $this->db->select('id_user,nama_user,nohp_user, noktp_user, jabatan_user, email_user')
+                                ->from('users')
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                //->where('jabatan_user', $jabatan_user)
+                                ->get()->result();
+        if($tampiluser){  
+            $this->response(array("result"=>$tampiluser, 200));
+        }else{
+            $this->response(array('status' => 'Gagal login'), 502);
+        }
+    }
+
+    public function updateuser_post(){
+        $id = $this->input->post('id_user', TRUE);
+        $id_cabang = $this->input->post('id_cabang', TRUE);
+        $jabatan_user = $this->input->post('jabatan_user', TRUE);
+        $data = [
+            'nama_user' => $this->input->post('nama_user', TRUE),
+            'nohp_user' => $this->input->post('nohp_user', TRUE),
+            'noktp_user' => $this->input->post('noktp_user', TRUE),
+            'email_user' => $this->input->post('email_user', TRUE),
+        ];
+        $response = $this->UsersModel->update_user($id,$data,$jabatan_user);
+        
+        if($response){
+            $this->response(array('status' => 'User sukses diupdate'), 200);  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'User gagal diupdate'], 401);
+        }
+
+    }
+
+    function deleteuser_post(){
+        $status = 1;
+        $id_user = $this->post('id_user',TRUE);
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $nama_user = $this->post('nama_user',TRUE);
+        $deleteuser = $this->db->set('status_user','0')
+                                ->where('id_user', $id_user)
+                                ->where('status_user', $status)
+                                ->where('nama_user', $nama_user)
+                                ->update('users');
+        if($deleteuser){
+            $this->response(array('status' => 'User sukses dihapus'), 200);
+        }else{
+            $this->response(['error'=>true, 'status'=> 'User gagal diupdate'], 401);
+        }
+    
+        
     }
 }
 

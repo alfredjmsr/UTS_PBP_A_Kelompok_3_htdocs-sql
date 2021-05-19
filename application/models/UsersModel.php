@@ -15,7 +15,12 @@ class UsersModel extends CI_Model {
     function save_user($data){
         return $this->db->insert($this->table,$data);
     }
-
+    function update_user($id,$data,$jabatan_user){
+        $update = $this->db->where('id_user', $id);
+                  $this->db->where('status_user', '1');
+                  $this->db->update('users', $data);
+        return $update;
+    }
 
   
 }
