@@ -15,6 +15,11 @@ class DiskonModel extends CI_Model {
     function save_diskon($data){
         return $this->db->insert($this->table,$data);
     }
+    function update_diskon($id,$data){
+        $update = $this->db->where('id_diskon', $id);
+        $this->db->update('diskon', $data);
+        return $update;
+    }
 
 }
 

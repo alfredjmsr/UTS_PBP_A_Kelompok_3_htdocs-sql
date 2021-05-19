@@ -19,6 +19,10 @@ class Diskon extends REST_Controller {
         $this->model = $this->DiskonModel;
     }
 
+    function index_get() {
+        $diskon = $this->db->get_where('diskon',['status'=>'1'])->result();
+        $this->response(array("diskon"=>$diskon, 200));
+    }
     public function adddiskon_post(){
         $date=date("Y-m-d");
         $data = [
@@ -41,6 +45,30 @@ class Diskon extends REST_Controller {
 
     }
 
+    public function updatediskon_post(){
+        $date=date("Y-m-d");
+        $id = $this->input->post('id_diskon', TRUE);
+        $data = [
+            'nama_diskon' => $this->input->post('nama_diskon', TRUE),
+            'min_bayar' => $this->input->post('min_bayar', TRUE),
+            'persen_diskon' => $this->input->post('persen_diskon', TRUE),
+            'harga_diskon' => $this->input->post('harga_diskon', TRUE),
+            'max_diskon' => $this->input->post('max_diskon', TRUE),
+            'exp_diskon'=> $this->input->post('exp_diskon', TRUE),
+            'tgl_diskon'=> $date,
+            'status' => '1'
+        ];
+        $response = $this->DiskonModel->update_diskon($id,$data);
+        
+        if($response){
+            $this->response(array('status' => 'Diskon sukses diupdate'), 200);  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Diskon gagal diupdate'], 401);
+        }
+
+    }
+
+
     public function getdiskonpersen_post(){
         $nama_diskon = $this->post('nama_diskon');
         $date=date("Y-m-d");
@@ -56,6 +84,21 @@ class Diskon extends REST_Controller {
         }                      
         
     }    
+
+    public function deletediskon_post(){
+        $date=date("Y-m-d");
+        $id = $this->input->post('id_diskon', TRUE);
+        $data = [
+            'status' => '2'
+        ];
+        $response = $this->DiskonModel->update_diskon($id,$data);   
+        if($response){
+            $this->response(array('status' => 'Diskon sukses dihapus'), 200);  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Diskon gagal dihapus'], 401);
+        }
+
+    }
 
 }
 

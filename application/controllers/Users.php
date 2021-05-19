@@ -7,14 +7,16 @@ use Restserver\Libraries\REST_Controller;
 
 class Users extends REST_Controller {
 
+    //0=tidak aktif
     //1=sudah dikonfirmasi admin
     //2=masih belum dikonfirmasi
-    //3=sudah tidak aktif
+    //3=konfirmasi dibatalkan
+
 
 
     function __construct($config = 'rest') {
         parent::__construct($config);
-       // $this->load->database();
+        $this->load->database();
         $this->load->model('UsersModel');
         $this->model = $this->UsersModel;
     }
@@ -163,6 +165,29 @@ class Users extends REST_Controller {
     //     }
     }
 
+    public function forgotpass_post()
+	{
+			// $email_user=$this->input->post('email_user');
+			// $que=$this->db->query("select password_user,email_user from users where email_user='$email_user'");
+			// $row=$que->row();
+			// $user_email=$row->email_user;
+			// if((!strcmp($email_user, $user_email))){
+			// $password_user=$row->password_user;
+			// 	/*Mail Code*/
+			// 	$to = $user_email;
+			// 	$subject = "Password";
+			// 	$txt = "Password anda ialah $password_user .";
+			// 	$headers = "From: cafex@gmail.com" . "\r\n" .
+			// 	"CC: cafex";
+			// 	mail($to,$subject,$txt,$headers);
+			// }
+			// else{
+               
+			//     $data['error']="Invalid Email ID !";
+            // }	
+
+    }
 }
+
 
 ?>

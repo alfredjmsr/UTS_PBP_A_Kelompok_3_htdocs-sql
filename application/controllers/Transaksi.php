@@ -120,8 +120,61 @@ class Transaksi extends REST_Controller {
                                 ->where('id_cabang', $id_cabang)  
                                 ->where('nama_pembeli', $nama_pembeli)
                                 ->where('nama_user', $nama_user)
-                                ->update('detailtransaksi');
-        
+                                ->update('detailtransaksi');   
+    }
+
+    function tampilrefund_post() {
+    
+        $status = 1;
+        $id_cabang = $this->post('id_cabang');
+        $namapembeli = $this->post('nama_pembeli');
+        $detailtransaksi = $this->db->select('transaksi.id_transaksi, transaksi.nama_pembeli, transaksi.tanggal, transaksi.total_bayar, diskon.nama_diskon, detailtransaksi.jumlah_item, product.nama_produk')
+                                ->from('transaksi')
+                                ->where('transaksi.status', $status)
+                                ->where('transaksi.id_cabang', $id_cabang)
+                                ->where('transaksi.nama_pembeli', $namapembeli)
+                                ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
+                                ->join('diskon', 'diskon.id_diskon = transaksi.id_diskon', 'LEFT')
+                                ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
+                                ->get()->result();
+        $this->response(array("result"=>$detailtransaksi, 200));
+
+    }
+
+    function carirefund_post() {
+    
+        $status = 1;
+        $id_cabang = $this->post('id_cabang');
+        $id = $this->post('id_transaksi');
+        $tanggal = $this->post('tanggal');
+        $detailtransaksi = $this->db->select('transaksi.id_transaksi, transaksi.nama_pembeli, transaksi.tanggal, transaksi.total_bayar, diskon.nama_diskon, detailtransaksi.jumlah_item, product.nama_produk')
+                                ->from('transaksi')
+                                ->where('transaksi.status', $status)
+                                ->where('transaksi.id_cabang', $id_cabang)
+                                ->where('transaksi.id_transaksi', $id)
+                                ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
+                                ->join('diskon', 'diskon.id_diskon = transaksi.id_diskon', 'LEFT')
+                                ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
+                                ->get()->result();
+        $this->response(array("result"=>$detailtransaksi, 200));
+
+    }
+
+    public function updaterefund_post(){
+        $id_transaksi = $this->post('id_transaksi',TRUE);
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $status = '1';
+        $refund = $this->db->set('status','2')
+                            ->where('id_transaksi', $id_transaksi)
+                            ->where('id_cabang', $id_cabang)
+                            ->where('status', $status)
+                            ->update('transaksi'); 
+        if($refund){
+            $this->response(array('status' => 'Refund sukses'), 200);  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Refund gagal'], 401);
+        }
+
     }
 
 
