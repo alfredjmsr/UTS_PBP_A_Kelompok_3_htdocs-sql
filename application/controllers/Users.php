@@ -177,27 +177,86 @@ class Users extends REST_Controller {
 
     public function forgotpass_post()
 	{
-			// $email_user=$this->input->post('email_user');
-			// $que=$this->db->query("select password_user,email_user from users where email_user='$email_user'");
-			// $row=$que->row();
-			// $user_email=$row->email_user;
-			// if((!strcmp($email_user, $user_email))){
-			// $password_user=$row->password_user;
-			// 	/*Mail Code*/
-			// 	$to = $user_email;
-			// 	$subject = "Password";
-			// 	$txt = "Password anda ialah $password_user .";
-			// 	$headers = "From: cafex@gmail.com" . "\r\n" .
-			// 	"CC: cafex";
-			// 	mail($to,$subject,$txt,$headers);
-			// }
-			// else{
-               
-			//     $data['error']="Invalid Email ID !";
-            // }	
+            $nama_user=$this->input->post('nama_user');
+            $id_cabang=$this->input->post('id_cabang');
+			$que=$this->db->query("select password_user,email_user from users where nama_user='$nama_user' and id_cabang ='$id_cabang'");
+			$row=$que->row();
+			$user_email=$row->email_user;
+            $password_user=$row->password_user;
 
+            $this->load->library('email');
+            $config = array();
+            $config['protocol']="smtp";
+            $config['charset'] ='utf-8';
+            $config['useragent'] = 'Codeigniter';
+            $config['mailtype']= "html";
+            $config['smtp_host']= "smtp.gmail.com";
+            $config['smtp_port']= "465";
+            $config['smtp_timeout']= "400";
+            $config['smtp_user']= "eccafex@gmail.com"; 
+            $config['smtp_pass']= "ec123456!";
+            $config['smtp_crypto']  = "ssl" ;
+            $config['crlf']="\r\n"; 
+            $config['newline']="\r\n"; 
+            $config['wordwrap'] = TRUE;
+            
+        //memanggil library email dan set konfigurasi untuk pengiriman email
+       
+            $this->email->initialize($config);
+            $this->email->from('eccafex@gmail.com','EC Cafe'); 
+            $this->email->to($user_email);
+            $this->email->subject('Kelola Akun');
+            $this->email->message(
+                'Salin kode berikut dan paste ke aplikasi untuk validasi => '.$password_user); 
+            $resp = $this->email->send();
+             if($resp)
+             {
+                $this->response(array('status' => 'berhasil'),200);
+             }       
+             else{
+                $this->response(array('status' => 'Gagal'), 502);
+                 echo "tidak terkirim"; 
+                echo $this->email->print_debugger();
+                die ;
+             }
     }
 
+    function verifikasikode_post(){
+        $status = 1;
+        $id_cabang = $this->post('id_cabang');
+        $nama_user = $this->post('nama_user');
+        $password_user = $this->post('password_user');
+       // $jabatan_user = $this->post('jabatan_user');
+        $verifikasi = $this->db->select('id_user, nama_user')
+                                ->from('users')
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                ->where('nama_user', $nama_user)
+                                ->where('password_user', $password_user)
+                                //->where('jabatan_user', $jabatan_user)
+                                ->get()->row();
+        if($verifikasi){  
+            $this->response(array('status'=>'berhasil', 200));
+        }else{
+            $this->response(array('status' => 'Gagal'), 502);
+        }
+    }
+
+    public function resetpassword_post(){
+        $status = 1;
+        $id_cabang = $this->input->post('id_cabang', TRUE);
+        $nama_user = $this->input->post('nama_user', TRUE);
+        $data = [
+            'password_user' => md5($this->input->post('password_user', TRUE)),
+        ];
+        $response = $this->UsersModel->update_password($id_cabang,$data,$nama_user);
+        if($response){
+            $this->response(array('status' => 'berhasil'), 200);  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'User gagal diupdate'], 401);
+        }
+
+    }
 
     function tampiluser_post(){
         $status = 1;

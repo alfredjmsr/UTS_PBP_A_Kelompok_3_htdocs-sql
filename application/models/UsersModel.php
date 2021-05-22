@@ -21,6 +21,13 @@ class UsersModel extends CI_Model {
                   $this->db->update('users', $data);
         return $update;
     }
+    function update_password($id_cabang,$data,$nama_user){
+        $update = $this->db->where('id_cabang', $id_cabang);
+                  $this->db->where('nama_user', $nama_user);
+                  $this->db->where('status_user', '1');
+                  $this->db->update('users', $data);
+        return $update;
+    }
 
   
 }
