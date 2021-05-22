@@ -24,6 +24,14 @@ class Cabang extends REST_Controller {
         $this->response(array("cabang"=>$cabang, 200));
     }
 
+    function searchcabang_post() {
+        $nama_cabang = $this->post('nama_cabang');
+		//$nama_produk = $this->db->get_where('product',['nama_produk'=>$nama])->result();
+		$this->db->like('nama_cabang',$nama_cabang,'both');
+		$namacabang = $this->db->get_where('cabang',['status'=>'1'])->result();
+        $this->response(array("cabang"=>$namacabang, 200));
+    }
+
     public function addcabang_post(){
         $date=date("Y-m-d");
         $data = [

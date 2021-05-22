@@ -25,7 +25,15 @@ class Users extends REST_Controller {
         $users = $this->db->get('users')->result();
         $this->response(array("result"=>$users, 200));
     }
-
+    function searchuser_post() {
+        $nama_user = $this->post('nama_user');
+        $id_cabang = $this->post('id_cabang');
+		//$nama_produk = $this->db->get_where('product',['nama_produk'=>$nama])->result();
+		$this->db->like('nama_user',$nama_user,'both');
+		$namauser = $this->db->get_where('users',['id_cabang'=>$id_cabang,'status_user'=>'1'])->result();
+        $this->response(array("result"=>$namauser, 200));
+    }
+	
     function getidcabang_post() {
         $id_cabang = $this->post('id_cabang');
         $query = $this->db->query("SELECT id_cabang FROM `".$this->db->dbprefix('cabang')."` WHERE id_cabang='".$id_cabang."'");

@@ -23,6 +23,14 @@ class Diskon extends REST_Controller {
         $diskon = $this->db->get_where('diskon',['status'=>'1'])->result();
         $this->response(array("diskon"=>$diskon, 200));
     }
+
+    function searchdiskon_post() {
+        $nama_diskon = $this->post('nama_diskon');
+		//$nama_produk = $this->db->get_where('product',['nama_produk'=>$nama])->result();
+		$this->db->like('nama_diskon',$nama_diskon,'both');
+		$namadiskon = $this->db->get_where('diskon',['status'=>'1'])->result();
+        $this->response(array("diskon"=>$namadiskon, 200));
+    }
     public function adddiskon_post(){
         $date=date("Y-m-d");
         $data = [

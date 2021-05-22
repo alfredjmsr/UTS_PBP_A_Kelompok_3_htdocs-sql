@@ -16,6 +16,14 @@ class Products extends REST_Controller {
     function index_get() {
         $produk = $this->db->get('product')->result();
         $this->response(array("result"=>$produk, 200));
+	}
+	
+	function searchproduk_post() {
+		$nama = $this->post('nama_produk');
+		//$nama_produk = $this->db->get_where('product',['nama_produk'=>$nama])->result();
+		$this->db->like('nama_produk',$nama,'both');
+		$nama_produk = $this->db->get('product')->result();
+        $this->response(array("result"=>$nama_produk, 200));
     }
 	
 	//Mengirim atau menambah data produk baru
