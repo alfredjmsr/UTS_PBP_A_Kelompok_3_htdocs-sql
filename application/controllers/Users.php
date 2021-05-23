@@ -275,6 +275,45 @@ class Users extends REST_Controller {
         }
     }
 
+    function profileuser_post(){
+        $status = 1;
+        $id_cabang = $this->post('id_cabang');
+        $nama_user = $this->post('nama_user');
+       // $jabatan_user = $this->post('jabatan_user');
+        $profile = $this->db->select('id_user,nama_user,nohp_user, noktp_user, jabatan_user, email_user')
+                                ->from('users')
+                                ->where('status_user', $status)
+                                ->where('id_cabang', $id_cabang)
+                                ->where('nama_user', $nama_user)
+                                //->where('jabatan_user', $jabatan_user)
+                                ->get()->result();
+        if($profile){  
+            $this->response(array("result"=>$profile, 200));
+        }else{
+            $this->response(array('status' => 'Gagal'), 502);
+        }
+    }
+
+    public function updateprofile_post(){
+        $id = $this->input->post('id_user', TRUE);
+        $id_cabang = $this->input->post('id_cabang', TRUE);
+        $jabatan_user = $this->input->post('jabatan_user', TRUE);
+        $data = [
+            'nama_user' => $this->input->post('nama_user', TRUE),
+            'nohp_user' => $this->input->post('nohp_user', TRUE),
+            'noktp_user' => $this->input->post('noktp_user', TRUE),
+            'email_user' => $this->input->post('email_user', TRUE),
+        ];
+        $response = $this->UsersModel->update_user($id,$data,$jabatan_user);
+        
+        if($response){
+            $this->response(array('message' => 'berhasil'), 200);  
+        }else{
+            $this->response(['error'=>true, 'message'=> 'User gagal diupdate'], 401);
+        }
+
+    }
+
     public function updateuser_post(){
         $id = $this->input->post('id_user', TRUE);
         $id_cabang = $this->input->post('id_cabang', TRUE);
@@ -312,6 +351,19 @@ class Users extends REST_Controller {
         }
     
         
+    }
+
+    public function getusername_post(){
+      
+        $status = '1';
+        $nama_user = $this->input->post('nama_user', TRUE);
+        $query = $this->db->query("SELECT * FROM `".$this->db->dbprefix('users')."` WHERE nama_user = '".$nama_user."'");
+        if ($query->num_rows() > 0 )
+        {  
+            $this->response(['error'=>true, 'status'=> 'Username sudah ada'], 401);         
+        }else{
+            $this->response(array('status' => 'username tidak ada'), 200);   
+        }
     }
 }
 

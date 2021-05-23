@@ -31,6 +31,23 @@ class InventoriModel extends CI_Model {
         return $update;
     }
 
+    function keluarkan_bahanbaku($nama_bahanbaku,$idinventori,$tgl,$data){
+        $update = $this->db->where('nama_bahanbaku', $nama_bahanbaku);
+                  $this->db->where('id_inventori', $idinventori);
+                  $this->db->where('tanggal_masuk', $tgl);
+                  $this->db->update('detailinventori', $data);
+        return $update;
+    }
+
+    function tambahplus_bahanbaku($idcabang,$idinventori,$nama_bahanbaku,$tanggalmasuk,$data){
+        $update = $this->db->where('id_cabang', $idcabang);
+                  $this->db->where('id_inventori', $idinventori);
+                  $this->db->where('nama_bahanbaku', $nama_bahanbaku);
+                  $this->db->where('tanggal_masuk', $tanggalmasuk);
+                  $this->db->update('detailinventori', $data);
+        return $update;
+    }
+
 
 }
 
