@@ -32,6 +32,18 @@ class Detailtransaksi extends REST_Controller {
                                 ->get()->result();
         $this->response(array("result"=>$detailtransaksi, 200));
     }
+
+    // function index_post() {
+    //     $status = 1;
+    //     $id_cabang = $this->post('id_cabang');
+    //     $detailtransaksi = $this->db->select('nama')
+    //                             ->from('product')
+    //                             ->where('detailtransaksi.status', $status)
+    //                             ->where('detailtransaksi.id_cabang', $id_cabang)
+    //                             ->join('detailtransaksi', 'detailtransaksi.id_produk = product.id_produk', 'LEFT')
+    //                             ->get()->result();
+    //     $this->response(array("result"=>$detailtransaksi, 200));
+    // }
     
     public function Addcart_post(){
         $date=date("Y-m-d");

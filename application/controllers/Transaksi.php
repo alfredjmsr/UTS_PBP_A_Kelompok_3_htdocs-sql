@@ -120,7 +120,13 @@ class Transaksi extends REST_Controller {
                                 ->where('id_cabang', $id_cabang)  
                                 ->where('nama_pembeli', $nama_pembeli)
                                 ->where('nama_user', $nama_user)
-                                ->update('detailtransaksi');   
+                                ->update('detailtransaksi');  
+        if($updatecart){
+            $this->response(array('status' => 'Update berhasil'), 200);  
+        }else{
+             $this->response(['error'=>true, 'status'=> 'Update gagal'], 401);
+        }                        
+                                 
     }
 
     function tampilrefund_post() {
@@ -175,6 +181,26 @@ class Transaksi extends REST_Controller {
             $this->response(['error'=>true, 'status'=> 'Refund gagal'], 401);
         }
 
+    }
+
+    public function struk_post(){
+        $nama_user = $this->post('nama_user',TRUE);
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $status = '1';
+        $struk = $this->db->SELECT('transaksi.id_transaksi, transaksi.total_bayar, transaksi.nama_pembeli, diskon.nama_diskon')
+                            ->from('transaksi')
+                            ->where('transaksi.status', $status)
+                            ->where('transaksi.id_cabang', $id_cabang)
+                            ->where('transaksi.nama_user', $nama_user)
+                            ->join('diskon', 'diskon.id_diskon = transaksi.id_diskon', 'LEFT')
+                            ->order_by('transaksi.id_transaksi', 'DESC')
+                            ->limit(1)
+                            ->get()->result();
+        if($struk){
+            $this->response(array("result"=>$struk, 200));  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'gagal'], 401);
+        }
     }
 
 
