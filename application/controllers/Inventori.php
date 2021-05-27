@@ -68,12 +68,15 @@ class Inventori extends REST_Controller {
         $id_cabang = $this->input->post('id_cabang', TRUE);
         $id_inventori = $this->input->post('id_inventori', TRUE);
         $status = '1';
+        $jumlahbahanbaku1 = $this->input->post('jumlah_bahanbaku', TRUE);
+        $hargabahanbaku1 = $this->input->post('harga_bahanbaku', TRUE);
         $nama_bahanbaku = $this->input->post('nama_bahanbaku', TRUE);
         $query = $this->db->query("SELECT * FROM `".$this->db->dbprefix('detailinventori')."` WHERE id_cabang='".$id_cabang."' AND id_inventori='".$id_inventori."' AND 
                                 nama_bahanbaku='".$nama_bahanbaku."' AND status = '".$status."' AND tanggal_masuk = '".$date."'");
         if ($query->num_rows() > 0 )
         {  
             $row=$query->row();
+            $iddetailinventori=$row->id_detailinventori;
             $idcabang=$row->id_cabang;
             $idinventori=$row->id_inventori;
 			$jumlahbahanbaku=$row->jumlah_bahanbaku;
@@ -82,10 +85,10 @@ class Inventori extends REST_Controller {
             $data = [
                 'jumlah_bahanbaku' => $this->input->post('jumlah_bahanbaku', TRUE),
                 'harga_bahanbaku' => $this->input->post('harga_bahanbaku', TRUE),
-                'exp_bahanbaku' => $this->input->post('exp_bahanbaku', TRUE),
+                //'exp_bahanbaku' => $this->input->post('exp_bahanbaku', TRUE),
             ];    
-            $response = $this->InventoriModel->tambahplus_bahanbaku($idcabang,$idinventori,$nama_bahanbaku,$tanggalmasuk,$data);
-            
+           // $response = $this->InventoriModel->tambahplus_bahanbaku($idcabang,$idinventori,$nama_bahanbaku,$tanggalmasuk,$data);
+            $response = $this->db->query("UPDATE detailinventori SET jumlah_bahanbaku = jumlah_bahanbaku + $jumlahbahanbaku1, harga_bahanbaku = harga_bahanbaku + $hargabahanbaku1 WHERE id_detailinventori = $iddetailinventori AND id_cabang = $idcabang");
             if($response){
                 $this->response(array('status' => 'Bahan baku sukses ditambah'), 200);  
             }else{
