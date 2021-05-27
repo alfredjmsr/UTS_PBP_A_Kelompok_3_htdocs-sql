@@ -74,7 +74,7 @@ class Detailtransaksi extends REST_Controller {
         $nama_user = $this->post('nama_user');
         $querydelete = $this->db->where('id_detailtransaksi', $id_detailtransaksi)
                                 ->where('id_cabang', $id_cabang)
-                                ->where('nama_user', $nama_user)
+                                //->where('nama_user', $nama_user)
                                 ->delete('detailtransaksi');
         $afftectedRows = $this->db->affected_rows();
         if ($afftectedRows == 1) {

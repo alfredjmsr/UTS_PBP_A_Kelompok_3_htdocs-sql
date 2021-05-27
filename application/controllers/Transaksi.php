@@ -187,6 +187,7 @@ class Transaksi extends REST_Controller {
         $nama_user = $this->post('nama_user',TRUE);
         $id_cabang = $this->post('id_cabang',TRUE);
         $status = '1';
+        //$struk = $this->db->SELECT('transaksi.id_transaksi, transaksi.total_bayar, transaksi.nama_pembeli, diskon.nama_diskon')
         $struk = $this->db->SELECT('transaksi.id_transaksi, transaksi.total_bayar, transaksi.nama_pembeli, diskon.nama_diskon')
                             ->from('transaksi')
                             ->where('transaksi.status', $status)
