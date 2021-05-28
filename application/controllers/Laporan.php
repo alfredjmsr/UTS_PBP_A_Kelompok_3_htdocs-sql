@@ -177,6 +177,108 @@ class Laporan extends REST_Controller {
     }
 
 
+    /////////////////////////////////////Tahun//////////////////////////////////////////
+    function gettransaksitahun_post() {
+        $vtanggal=$this->input->post('tanggal');
+        $vbulan=date("m",strtotime($vtanggal));
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $laporan = $this->db->SELECT('SUM(total_bayar) as total_transaksi, COUNT(id_transaksi) as jumlah_transaksi')
+                            ->FROM('transaksi')
+                            ->WHERE('id_cabang', $id_cabang)
+                            ->WHERE('status', '1')
+                            ->WHERE('year(tanggal)', $vtahun)
+                            ->get()->result();
+        if($laporan){
+            $this->response(array("result"=>$laporan, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+ 
+    }
+
+    function gettransaksidiskontahun_post() {
+        $vtanggal=$this->input->post('tanggal');
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $laporan = $this->db->SELECT('COUNT(id_transaksi) as jumlah_transaksidiskon')
+                            ->FROM('transaksi')
+                            ->WHERE('id_cabang', $id_cabang)
+                            ->WHERE('status', '1')
+                            ->WHERE('id_diskon >', '0')
+                            ->WHERE('year(tanggal)', $vtahun)
+                            ->get()->result();
+        if($laporan){
+            $this->response(array("result"=>$laporan, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+ 
+    }
+
+    function gettransaksirefundtahun_post() {
+        $vtanggal=$this->input->post('tanggal');
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $laporan = $this->db->SELECT('SUM(total_bayar) as total_refund, COUNT(id_transaksi) as jumlah_transaksirefund')
+                            ->FROM('transaksi')
+                            ->WHERE('id_cabang', $id_cabang)
+                            ->WHERE('status', '2')
+                            ->WHERE('year(tanggal)', $vtahun)
+                            ->get()->result();
+        if($laporan){
+            $this->response(array("result"=>$laporan, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+ 
+    }
+
+    
+    function gettransaksihbptahun_post() {
+        //total_transaksi tidak digunakan
+        $vtanggal=$this->input->post('tanggal');
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $laporan = $this->db->SELECT('SUM(transaksi.total_bayar) as total_transaksi, SUM(detailtransaksi.jumlah_item * product.biaya_produk) as total_biayaproduk')
+                            ->FROM('transaksi')
+                            ->WHERE('transaksi.id_cabang', $id_cabang)
+                            ->WHERE('transaksi.status', '2')
+                            ->WHERE('year(transaksi.tanggal)', $vtahun)
+                            ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
+                            ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
+                            ->get()->result();
+        if($laporan){
+            $this->response(array("result"=>$laporan, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+ 
+    }
+
+    function gettransaksiperbulan_post() {
+        //total_transaksi tidak digunakan
+        $vtanggal=$this->input->post('tanggal');
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $laporan = $this->db->SELECT('month(transaksi.tanggal) as bulan, SUM(transaksi.total_bayar) as total_transaksi, SUM(detailtransaksi.jumlah_item * product.biaya_produk) as total_biayaproduk')
+                            ->FROM('transaksi')
+                            ->WHERE('transaksi.id_cabang', $id_cabang)
+                            ->WHERE('transaksi.status', '2')
+                            ->WHERE('year(transaksi.tanggal)', $vtahun)
+                            ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
+                            ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
+                            ->group_by('bulan')
+                            ->order_by('bulan')
+                            ->get()->result();
+        if($laporan){
+            $this->response(array("result"=>$laporan, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+ 
+    }
+
 
 
 }

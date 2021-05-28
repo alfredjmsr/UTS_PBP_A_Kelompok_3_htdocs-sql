@@ -22,10 +22,12 @@ class Inventori extends REST_Controller {
     function tampilinventori_post() {
             $status = 1;
             $id_cabang = $this->post('id_cabang');
-            $inventori = $this->db->select('id_inventori,nama_bahanbaku,tanggal_buat')
+            $inventori = $this->db->select('inventori.id_inventori,.inventori.nama_bahanbaku,SUM(detailinventori.jumlah_bahanbaku) as total_bahanbaku')
                                     ->from('inventori')
-                                    ->where('status', $status)
-                                    ->where('id_cabang', $id_cabang)
+                                    ->where('inventori.status', $status)
+                                    ->where('inventori.id_cabang', $id_cabang)
+                                    ->join('detailinventori', 'detailinventori.id_inventori = inventori.id_inventori', 'LEFT')
+                                    ->group_by('inventori.id_inventori')
                                     ->get()->result();
             $this->response(array("result"=>$inventori, 200));
                                     
@@ -248,6 +250,24 @@ class Inventori extends REST_Controller {
         }   
                 
     }  
+
+    function deleteinventori_post(){
+        $status = 1;
+        $id_inventori = $this->post('id_inventori',TRUE);
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $deleteinventori = $this->db->set('status','0')
+                                ->where('id_inventori', $id_inventori)
+                                ->where('id_cabang', $id_cabang)
+                                ->where('status', $status)
+                                ->update('inventori');
+        if($deleteinventori){
+            $this->response(array('status' => 'Inventori sukses dihapus'), 200);
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Inventori gagal didelete'], 401);
+        }
+    
+        
+    }
 
 
    
