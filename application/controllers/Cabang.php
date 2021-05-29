@@ -102,7 +102,7 @@ class Cabang extends REST_Controller {
             'nama_user' => $this->input->post('nama_user', TRUE),
             'nohp_user' => '1234435656',
             'noktp_user' => '49574560968',
-            'email_user' => 'ownerowner@gmail.com',
+            'email_user' => 'joesam0268@gmail.com',
             'password_user' => md5('111111'),
             'jabatan_user' => '1',
             'status_user' => '1'
@@ -114,6 +114,21 @@ class Cabang extends REST_Controller {
         }else{
             $this->response(['error'=>true, 'status'=> 'Register Gagal'], 401);
         }
+    }
+
+    function listcabang_post() {
+        //total_transaksi tidak digunakan
+        $status = '1';
+        $report = $this->db->SELECT('id_cabang as kode_cabang, nama_cabang')
+                            ->FROM('cabang')
+                            ->order_by('id_cabang')
+                            ->get()->result();
+        if($report){
+            $this->response(array("result"=>$report, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+ 
     }
 
 }

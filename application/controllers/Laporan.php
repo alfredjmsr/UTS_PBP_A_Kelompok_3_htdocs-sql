@@ -100,7 +100,7 @@ class Laporan extends REST_Controller {
         $laporan = $this->db->SELECT('SUM(transaksi.total_bayar) as total_transaksi, SUM(detailtransaksi.jumlah_item * product.biaya_produk) as total_biayaproduk')
                             ->FROM('transaksi')
                             ->WHERE('transaksi.id_cabang', $id_cabang)
-                            ->WHERE('transaksi.status', '2')
+                            ->WHERE('transaksi.status', '1')
                             ->WHERE('month(transaksi.tanggal)', $vbulan)
                             ->WHERE('year(transaksi.tanggal)', $vtahun)
                             ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
@@ -243,7 +243,7 @@ class Laporan extends REST_Controller {
         $laporan = $this->db->SELECT('SUM(transaksi.total_bayar) as total_transaksi, SUM(detailtransaksi.jumlah_item * product.biaya_produk) as total_biayaproduk')
                             ->FROM('transaksi')
                             ->WHERE('transaksi.id_cabang', $id_cabang)
-                            ->WHERE('transaksi.status', '2')
+                            ->WHERE('transaksi.status', '1')
                             ->WHERE('year(transaksi.tanggal)', $vtahun)
                             ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
                             ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
@@ -261,18 +261,26 @@ class Laporan extends REST_Controller {
         $vtanggal=$this->input->post('tanggal');
         $vtahun=date("Y",strtotime($vtanggal));
         $id_cabang = $this->input->post('id_cabang');
-        $laporan = $this->db->SELECT('month(transaksi.tanggal) as bulan, SUM(transaksi.total_bayar) as total_transaksi, SUM(detailtransaksi.jumlah_item * product.biaya_produk) as total_biayaproduk')
+        $report = $this->db->SELECT('SUM(total_bayar) as total_transaksi')
+                            ->FROM('transaksi')
+                            ->WHERE('id_cabang', $id_cabang)
+                            ->WHERE('status', '1')
+                            ->WHERE('year(tanggal)', $vtahun)
+                            ->group_by('month(tanggal)')
+                            ->get()->result();
+        $laporan = $this->db->SELECT('transaksi.id_transaksi, month(transaksi.tanggal) as bulan, SUM(detailtransaksi.jumlah_item * product.biaya_produk) as total_biayaproduk')
                             ->FROM('transaksi')
                             ->WHERE('transaksi.id_cabang', $id_cabang)
-                            ->WHERE('transaksi.status', '2')
+                            ->WHERE('transaksi.status', '1')
                             ->WHERE('year(transaksi.tanggal)', $vtahun)
                             ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
                             ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
+                            ->order_by('transaksi.id_transaksi')
                             ->group_by('bulan')
                             ->order_by('bulan')
                             ->get()->result();
         if($laporan){
-            $this->response(array("result"=>$laporan, 200));
+            $this->response(array("report"=>$report, "result"=>$laporan, 200));
         }else{
             $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
         }

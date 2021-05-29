@@ -204,5 +204,22 @@ class Transaksi extends REST_Controller {
         }
     }
 
+    function historitransaksi_post() {
+        $date=date("Y-m-d");
+        $id_cabang = $this->post('id_cabang',TRUE);
+        $laporan = $this->db->SELECT('*')
+                            ->from('transaksi')
+                            ->where('id_cabang', $id_cabang)
+                            ->where('tanggal', $date)
+                            ->get()->result();
+        if($laporan){
+            $this->response(array('result'=>$laporan, 200));
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Gagal'], 401);
+        }
+       
+    }
+
+
 
 }
