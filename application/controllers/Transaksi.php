@@ -116,9 +116,12 @@ class Transaksi extends REST_Controller {
         $id = $row->id_transaksi;
         $status = 0;
         $updatecart = $this->db->set('id_transaksi',$id)
-                                ->where('status', $status)
-                                ->where('id_cabang', $id_cabang)  
-                                ->where('nama_pembeli', $nama_pembeli)
+                               ->set('nama_pembeli',$nama_pembeli)
+                               ->set('status','0')
+                               // ->where('status', $status)
+                                ->where('status', '1')
+                                ->where('id_transaksi', '0')  
+                                ->where('nama_pembeli', '')
                                 ->where('nama_user', $nama_user)
                                 ->update('detailtransaksi');  
         if($updatecart){
@@ -187,16 +190,27 @@ class Transaksi extends REST_Controller {
         $nama_user = $this->post('nama_user',TRUE);
         $id_cabang = $this->post('id_cabang',TRUE);
         $status = '1';
+        $que=$this->db->query("SELECT id_transaksi FROM transaksi WHERE status = '$status' ORDER BY id_transaksi DESC LIMIT 1");
+		$row=$que->row();
+		$id_transaksi=$row->id_transaksi;
         //$struk = $this->db->SELECT('transaksi.id_transaksi, transaksi.total_bayar, transaksi.nama_pembeli, diskon.nama_diskon')
-        $struk = $this->db->SELECT('transaksi.id_transaksi, transaksi.total_bayar, transaksi.nama_pembeli, diskon.nama_diskon')
+        $struk = $this->db->SELECT('transaksi.id_transaksi, transaksi.total_bayar, transaksi.nama_pembeli, diskon.nama_diskon, SUM(detailtransaksi.harga_subtotal) as subtotal')
                             ->from('transaksi')
                             ->where('transaksi.status', $status)
                             ->where('transaksi.id_cabang', $id_cabang)
                             ->where('transaksi.nama_user', $nama_user)
+                            ->where('transaksi.id_transaksi', $id_transaksi)
                             ->join('diskon', 'diskon.id_diskon = transaksi.id_diskon', 'LEFT')
+                            ->join('detailtransaksi', 'detailtransaksi.id_transaksi = transaksi.id_transaksi', 'LEFT')
                             ->order_by('transaksi.id_transaksi', 'DESC')
+                            ->group_by('transaksi.id_transaksi')
                             ->limit(1)
                             ->get()->result();
+        // $subtotal = $this->db->SELECT('SUM(harga_subtotal) as subtotal')
+        //                     ->from('detailtransaksi')
+        //                     ->where('id_transaksi', $id_transaksi)
+        //                     ->limit(1)
+        //                     ->get()->result();                    
         if($struk){
             $this->response(array("result"=>$struk, 200));  
         }else{
