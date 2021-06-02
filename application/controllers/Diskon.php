@@ -108,6 +108,22 @@ class Diskon extends REST_Controller {
 
     }
 
+    public function listdiskon_post(){
+        $status = $this->input->post('status', TRUE);
+        $date=date("Y-m-d");
+        $diskon = $this->db->select('nama_diskon')
+                                ->from('diskon')
+                                ->where('exp_diskon >=', $date)
+                                ->where('status', $status)
+                                ->get()->result();
+        if($diskon){
+            $this->response(array("diskon"=>$diskon, 200));                  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'Diskon tidak tersedia'], 401);
+        }                      
+        
+    }    
+
 }
 
 ?>
