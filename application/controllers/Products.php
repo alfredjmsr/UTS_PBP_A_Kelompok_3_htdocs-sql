@@ -102,8 +102,8 @@ class Products extends REST_Controller {
     }
 	
 	//Menghapus salah satu data produk
-    function index_delete() {
-        $id = $this->delete('id_produk');
+    function hapusproduk_post() {
+        $id = $this->post('id_produk');
 		
 		//Hapus Image Lama
 		$queryimg = $this->db->query("SELECT foto_produk FROM `".$this->db->dbprefix('product')."` WHERE id_produk='".$id."'");
