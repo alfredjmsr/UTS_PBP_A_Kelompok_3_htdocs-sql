@@ -287,6 +287,43 @@ class Laporan extends REST_Controller {
  
     }
 
+    function cektahun_post() {
+        //total_transaksi tidak digunakan
+        $vtanggal=$this->input->post('tanggal');
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $cek = $this->db->SELECT('*')
+                            ->FROM('transaksi')
+                            ->WHERE('year(tanggal)', $vtahun)
+                            ->WHERE('status', '1')
+                            ->get()->result();
+        if($cek){
+            $this->response(array('pesan'=>'ada', 200));
+        }else{
+            $this->response(['pesan'=> 'kosong'], 401);
+        }
+ 
+    }
+
+    function cekbulan_post() {
+        //total_transaksi tidak digunakan
+        $vtanggal=$this->input->post('tanggal');
+        $vbulan=date("m",strtotime($vtanggal));
+        $vtahun=date("Y",strtotime($vtanggal));
+        $id_cabang = $this->input->post('id_cabang');
+        $cek = $this->db->SELECT('*')
+                            ->FROM('transaksi')
+                            ->WHERE('month(tanggal)', $vbulan)
+                            ->WHERE('year(tanggal)', $vtahun)
+                            ->get()->result();
+        if($cek){
+            $this->response(array('pesan'=>'ada', 200));
+        }else{
+            $this->response(['pesan'=> 'kosong'], 401);
+        }
+ 
+    }
+
 
 
 }
