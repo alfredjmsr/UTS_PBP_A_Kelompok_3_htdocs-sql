@@ -36,7 +36,7 @@ class Products extends REST_Controller {
 		{	
 			//Config Upload
 			$config['upload_path'] = './assets/files/image/';
-			$config['allowed_types'] = 'png|jpg';
+			$config['allowed_types'] = 'png|jpg|jpeg';
 			$config['max_size'] = '20480';
 			$foto_produk = $_FILES['foto_produk']['name'];
 			$path="./assets/files/image/";
@@ -66,7 +66,7 @@ class Products extends REST_Controller {
 		{
 			//Config Upload
 			$config['upload_path'] = './assets/files/image/';
-			$config['allowed_types'] = 'png|jpg';
+			$config['allowed_types'] = 'png|jpg|jpeg';
 			$config['max_size'] = '20480';
 			$path="./assets/files/image/";
 			$foto_produk = $_FILES['foto_produk']['name'];

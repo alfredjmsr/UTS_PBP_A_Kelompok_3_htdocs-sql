@@ -160,19 +160,6 @@ class Users extends REST_Controller {
             }else{
                 $this->response(array('status' => 'Gagal login'), 502);
             }
-   
-        // if()
-
-    //    // $cek = $this->UsersModel->cek_user($data);
-    //     $row = $this->db->get_where('users', $data)->row();
-    //     $result = $row->num_row();
-    //     $count = $result['COUNT(*)'];
-    //     if($count >= 1){
-    //         $this->response(array("result"=>$data,200));
-    //     }
-    //     else{
-    //     $this->response(['error'=>true, 'message'=> 'Login Gagal'], 401);
-    //     }
     }
 
     public function forgotpass_post()

@@ -117,7 +117,6 @@ class Cabang extends REST_Controller {
     }
 
     function listcabang_post() {
-        //total_transaksi tidak digunakan
         $status = '1';
         $report = $this->db->SELECT('id_cabang as kode_cabang, nama_cabang')
                             ->FROM('cabang')

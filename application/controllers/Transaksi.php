@@ -165,6 +165,7 @@ class Transaksi extends REST_Controller {
                                 ->join('diskon', 'diskon.id_diskon = transaksi.id_diskon', 'LEFT')
                                 ->join('product', 'product.id_produk = detailtransaksi.id_produk', 'LEFT')
                                 ->get()->result();
+        
         $this->response(array("result"=>$detailtransaksi, 200));
 
     }
