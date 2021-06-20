@@ -253,12 +253,12 @@ class Users extends REST_Controller {
                                 ->from('users')
                                 ->where('status_user', $status)
                                 ->where('id_cabang', $id_cabang)
-                                //->where('jabatan_user', $jabatan_user)
+                                ->where('jabatan_user>','1')
                                 ->get()->result();
         if($tampiluser){  
             $this->response(array("result"=>$tampiluser, 200));
         }else{
-            $this->response(array('status' => 'Gagal login'), 502);
+            $this->response(array('status' => 'Gagal'), 502);
         }
     }
 
