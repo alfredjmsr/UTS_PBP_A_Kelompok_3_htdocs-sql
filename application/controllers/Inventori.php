@@ -208,10 +208,7 @@ class Inventori extends REST_Controller {
 
 
         $sql = $this->db->query("SELECT * FROM detailinventori WHERE nama_bahanbaku = '$nama_bahanbaku' AND id_inventori = '$id_inventori' AND id_cabang = '$id_cabang' AND jumlah_bahanbaku > 0 AND exp_bahanbaku >='$date' ORDER by tanggal_masuk ASC");
-    
-        // ayo mulai mikir , siapkan logikanya yaaa....
-
-        // bandingkan dulu boss qty yg dibeli dg stok brg digudang ...
+   
         if($jumlah_bahanbaku <= $stok_all) {
 
             foreach($sql->result() as $row) {

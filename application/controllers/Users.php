@@ -121,9 +121,13 @@ class Users extends REST_Controller {
 
     public function Register_post(){ 
         $date = date("Y-m-d");
+        $nama_cabang = $this->input->post('nama_cabang',TRUE);
+        $que=$this->db->query("select id_cabang from cabang where nama_cabang='$nama_cabang'");
+        $row=$que->row();
+        $idcabang=$row->id_cabang;
         $data = [
             'id_user' => $this->input->post('id_user', TRUE),
-            'id_cabang' => $this->input->post('id_cabang', TRUE),
+            'id_cabang' => $idcabang,
             'nama_user' => $this->input->post('nama_user', TRUE),
             'nohp_user' => $this->input->post('nohp_user', TRUE),
             'noktp_user' => $this->input->post('noktp_user', TRUE),
@@ -142,21 +146,42 @@ class Users extends REST_Controller {
         }
     }
 
+    public function listcabang_post(){
+        $status = $this->input->post('status', TRUE);
+        $date=date("Y-m-d");
+        $cabang = $this->db->select('nama_cabang')
+                                ->from('cabang')
+                                ->where('status', $status)
+                                ->get()->result();
+        if($cabang){
+            $this->response(array("cabang"=>$cabang, 200));                  
+        }else{
+            $this->response(['error'=>true, 'status'=> 'cabang tidak tersedia'], 401);
+        }                      
+        
+    }    
 
 
     public function Login_post(){
-
-            $id_cabang = $this->post('id_cabang');
             $nama_user = $this->post('nama_user');
             $password_user = $this->post('password_user');
-            $jabatan_user = $this->post('jabatan_user');
+            //$jabatan_user = $this->post('jabatan_user');
             $status_user = 1;
-            $query = $this->db->query("SELECT id_user FROM `".$this->db->dbprefix('users')."` WHERE id_cabang='".$id_cabang."' AND nama_user='".$nama_user."' AND 
-            password_user='".md5($password_user)."' AND jabatan_user='".$jabatan_user."' AND status_user = '".$status_user."'");
-           	
-            if ($query->num_rows() > 0 )
+            $status_cabang = 1;
+           	$query = $this->db->select('users.id_user, users.jabatan_user, cabang.id_cabang, cabang.nama_cabang')
+                ->from('users')
+                ->join('cabang', 'cabang.id_cabang = users.id_cabang', 'LEFT')
+                ->where('users.status_user', $status_user)
+                ->where('users.nama_user', $nama_user)
+                ->where('users.password_user', md5($password_user))
+                ->where('cabang.status', $status_cabang)
+                ->get()->result();
+        //     $query = $this->db->query("SELECT id_user FROM `".$this->db->dbprefix('users')."` WHERE id_cabang='".$id_cabang."' AND nama_user='".$nama_user."' AND 
+        //     password_user='".md5($password_user)."' AND jabatan_user='".$jabatan_user."' AND status_user = '".$status_user."'");
+        //    if ($query->num_rows() > 0 )
+            if($query)
             {  
-                $this->response(array('status' => 'Sukses login'), 200);
+                $this->response(array("result"=>$query,'status' => 'Sukses login'), 200);
             }else{
                 $this->response(array('status' => 'Gagal login'), 502);
             }
@@ -165,12 +190,11 @@ class Users extends REST_Controller {
     public function forgotpass_post()
 	{
             $nama_user=$this->input->post('nama_user');
-            $id_cabang=$this->input->post('id_cabang');
-			$que=$this->db->query("select password_user,email_user from users where nama_user='$nama_user' and id_cabang ='$id_cabang'");
+			$que=$this->db->query("select password_user,email_user,id_cabang from users where nama_user='$nama_user'");
 			$row=$que->row();
 			$user_email=$row->email_user;
             $password_user=$row->password_user;
-
+            $idcabang=$row->id_cabang;
             $this->load->library('email');
             $config = array();
             $config['protocol']="smtp";
@@ -198,7 +222,7 @@ class Users extends REST_Controller {
             $resp = $this->email->send();
              if($resp)
              {
-                $this->response(array('status' => 'berhasil'),200);
+                $this->response(array('message'=>$idcabang,'status' => 'berhasil'),200);
              }       
              else{
                 $this->response(array('status' => 'Gagal'), 502);
