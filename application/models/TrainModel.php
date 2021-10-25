@@ -2,19 +2,19 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class TransaksiModel extends CI_Model {
+class TrainModel extends CI_Model {
 
-    public $table = 'transaksi';
-    public $primaryKey = 'id_transaksi';
+    public $table = 'trains';
+    public $primaryKey = 'id_train';
+
     public function __construct(){
         parent::__construct();
         $this->load->database();
     }
-
-    function save_transaksi($data){
+    function addtrains($data){
         return $this->db->insert($this->table,$data);
     }
-
+    
 
   
 }

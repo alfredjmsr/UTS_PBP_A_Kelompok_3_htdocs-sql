@@ -2,20 +2,21 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class DetailTransaksiModel extends CI_Model {
+class FlightModel extends CI_Model {
 
-    public $table = 'detailtransaksi';
-    public $primaryKey = 'id_detailtransaksi';
+    public $table = 'flights';
+    public $primaryKey = 'id_flight';
 
     public function __construct(){
         parent::__construct();
         $this->load->database();
     }
-
-    function save_detaildtransaksi($data){
+    function addFlights($data){
         return $this->db->insert($this->table,$data);
     }
+    
 
+  
 }
 
 ?>
